@@ -37,13 +37,16 @@ FROM alpine:3.14
 
 RUN apk add --no-cache openssl ca-certificates
 
-COPY --from=build --chown=daemon:daemon /stage /writefreely
+COPY --from=build --chown=nobody:nobody /stage /writefreely
 COPY bin/run.sh /writefreely/
+RUN mkdir /data /config && \
+    chown nobody:nobody /data /config /writefreely/run.sh && \
+    chmod +x /writefreely/run.sh
 
 WORKDIR /writefreely
 VOLUME /data
 VOLUME /config
 EXPOSE 8080
-USER daemon
+USER nobody
 
 ENTRYPOINT ["/writefreely/run.sh"]
