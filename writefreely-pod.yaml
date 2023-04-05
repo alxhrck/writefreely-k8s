@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: writefreely
+  labels:
+    app: writefreely
+spec:
+  securityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+  containers:
+    - name: writefreely
+      image: localhost:5000/writeas/writefreely:latest
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 8080
+      env:
+        - name: USERNAME
+          value: "admin"
+        - name: PASSWORD
+          value: "admin"
+      volumeMounts:
+      - name: config
+        mountPath: /config/config.ini
+        subPath: config.ini
+
+  volumes:
+    - name: config
+      configMap:
+        name: writefreely-custom-cfgmap
